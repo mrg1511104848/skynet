@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.skynet.frame.util.excel.ExcelBean;
 
 public class ExcelUtil {
+	public static final String NEW_LINE = "\r\n";
 	public static void export(String savePath,List<String> cells,List<List<String>> values){
 		export(savePath, "sheet", cells, values);
 	}

@@ -1,7 +1,9 @@
 package org.skynet.frame.util.mongo;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.bson.Document;
 import org.bson.types.Binary;
 import org.skynet.frame.config.Config;
 import org.skynet.frame.persistent.MongoIndex;
+import org.skynet.frame.util.date.DateUtil;
 import org.skynet.frame.util.zlib.ZLib;
 
 import com.mongodb.BasicDBObject;
@@ -48,7 +51,7 @@ public class MongoUtil {
 	private static Map<String, MongoCollection<Document>> mongoCollectionMap = new HashMap<String, MongoCollection<Document>>();// mongoCollection
 	static MongoClientOptions myOptions;
 	static {
-
+		
 		MongoClientOptions.Builder build = new MongoClientOptions.Builder();
 		build.connectionsPerHost(50); // 与目标数据库能够建立的最大connection数量为50
 		build.threadsAllowedToBlockForConnectionMultiplier(50); // 如果当前所有的connection都在使用中，则每个connection上可以有50个线程排队等待
@@ -449,6 +452,7 @@ public class MongoUtil {
 			String json = map.toString().replaceAll(":null", ":''");
 			map = JSONObject.fromObject(json);
 		}
+		map.put("createTime", new SimpleDateFormat(DateUtil.DATE_FORMAT_01).format(new Date()));
 		MongoCollection<Document> collection = MongoUtil.getCollection(
 				Config.DB, collectionName);
 		return saveDoc(collection, map);
@@ -950,7 +954,7 @@ public class MongoUtil {
 	 * @return
 	 */
 	public static Document findOne(String collectionName,
-			String key,String value) {
+			String key,Object value) {
 		Map<String, Object> queryMap = new HashMap<String, Object>();
 		queryMap.put(key, value);
 		return findOne(collectionName, queryMap);

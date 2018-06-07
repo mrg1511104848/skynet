@@ -196,12 +196,30 @@ public class RegexUtils {
     public static List<String> getByGroup(String regex , String str ,Integer idx) {
     	List<String> resultList = new ArrayList<String>();
         Matcher matcher = Pattern.compile(regex).matcher(str);
+        int groupCount = matcher.groupCount();
+        if(idx == null){
+        	idx = 1;
+        }
+        if(idx > groupCount){
+        	return null;
+        }
         while(matcher.find()){
         	if(idx == null) {
         		resultList.add(matcher.group());
         	}else{
         		resultList.add(matcher.group(idx));
         	}
+        }
+        return resultList;
+    }
+    public static List<String> getByGroup(String regex , String str) {
+    	List<String> resultList = new ArrayList<String>();
+        Matcher matcher = Pattern.compile(regex).matcher(str);
+        if(matcher.find()){
+	        int groupCount = matcher.groupCount();
+	        for (int i = 1 ; i <= groupCount ; i++) {
+	        	resultList.add(matcher.group(i));
+			}
         }
         return resultList;
     }
@@ -214,6 +232,13 @@ public class RegexUtils {
         String regex = "[a-zA-Z0-9_]+$";
         return Pattern.matches(regex, username);
     }
+    public static String dosageFilterRegex = ""
+    		+ "("
+    		+ "[0-9.一—二三四五六七八九]+\\s*[mg毫克片粒颗袋拴揿瓶片喷枚盒滴单位袋包百万单位μgWmlIUkgm²]?"
+			+ "\\s*[至或~\\--—～]{1}"
+			+ "\\s*[0-9.一—二三四五六七八九]+\\s*[mg毫克片粒颗袋拴揿瓶片喷枚盒滴单位袋包百万单位μgWmlIUkgm²]+"
+			+ ")";
+//    public static String dosageFilterRegex = "(-[0-9.]+\\s*[至或~-～mg毫克次片粒颗袋mg拴揿瓶片喷枚盒滴单位袋包百万单位μgWmlIUkgm²]+\\s*)";
     public static void main(String[] args) {
     	/*boolean rr = checkDigit("65m3", 4);
     	//System.out.println(rr);
@@ -235,6 +260,16 @@ public class RegexUtils {
 //    	//System.out.println(is);
     	
     	//System.out.println(getNum("gav333222"));;
-    	
+//    	System.out.println(getByGroup("(\\d+)~(\\d+)", "1~2", 2));
+//    	List<String> list = getByGroup("(\\d+|\\d+.\\d+)~(\\d+|\\d+.\\d+)", "2.5~5");
+//    	System.out.println(list);
+//    	list = getByGroup("(\\d+|\\d+.\\d+)~(\\d+|\\d+.\\d+)", "522~53311");
+//    	System.out.println(list);
+//    	
+//    	String s = RegexUtils.getByRegex("documentId:\\s*'(.+)'", "documentId:  '391125'");
+//    	System.out.println(s);
+    	String s = RegexUtils.getByRegex(dosageFilterRegex, "每次口服一至二片");
+    	System.out.println(s);
+    	System.out.println("一日 1～2 片".matches(".*mg.*|.*g.*|.*毫克.*|.*克.*|.*次.*|.*片.*[片|粒|颗|袋|mg|g|毫克|克]?"));
     }
 }

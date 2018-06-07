@@ -152,12 +152,24 @@ public class ExcelReadUtil {
                 else if ("str".equals(cellType))  
                     nextDataType = xssfDataType.FORMULA;  
                 else if (cellStyleStr != null) {  
-                    // It's a number, but almost certainly one  
-                    //  with a special style or format  
-                    int styleIndex = Integer.parseInt(cellStyleStr);  
-                    XSSFCellStyle style = stylesTable.getStyleAt(styleIndex);  
-                    this.formatIndex = style.getDataFormat();  
-                    this.formatString = style.getDataFormatString();  
+                	int styleIndex = Integer.parseInt(cellStyleStr);
+					XSSFCellStyle style = this.stylesTable
+							.getStyleAt(styleIndex);
+					formatIndex = style.getDataFormat();
+					formatString = style.getDataFormatString();
+					short format = this.formatIndex;
+					if (format == 14 || format == 31 || format == 57
+							|| format == 58 || (176 <= format && format <= 178)
+							|| (182 <= format && format <= 196)
+							|| (210 <= format && format <= 213)
+							|| (208 == format)) { // 日期
+						this.formatString = "yyyy-MM-dd";
+						nextDataType = xssfDataType.NUMBER;
+					} else if (format == 20 || format == 32 || format == 183
+							|| (200 <= format && format <= 209)) { // 时间
+						this.formatString = "HH:mm";
+						nextDataType = xssfDataType.NUMBER;
+					}
                     if (this.formatString == null)  
                         this.formatString = BuiltinFormats.getBuiltinFormat(this.formatIndex);  
                 }  

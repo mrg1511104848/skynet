@@ -1137,7 +1137,6 @@ public class HttpUtil {
 		if (headers == null) {
 			headers = DEFAULT_HEADERS;
 		}
-		String html = null;
 		try {
 			List<Object> result = HttpUtil.doGet(closeableHttpClient, pageHref,
 					headers);
@@ -1488,7 +1487,7 @@ public class HttpUtil {
 		}
 		if (!(url.startsWith("http://") || url.startsWith("https://"))) {
 			url = "http://" + url;
-		}
+		}	
 		url = url.replaceAll(" ", "%20");
 		return url;
 	}
@@ -1501,7 +1500,7 @@ public class HttpUtil {
 		url = getParsedHref(url);
 		List<Object> result = null;
 
-		URL url_;
+		/*URL url_;
 		URI uri = null;
 		try {
 			url_ = new URL(url);
@@ -1509,7 +1508,7 @@ public class HttpUtil {
 					url_.getPath(), url_.getQuery(), null);
 		} catch (Exception e1) {
 			e1.printStackTrace();
-		}
+		}*/
 
 		CloseableHttpClient hclient = null;
 		if (client != null) {
@@ -1534,7 +1533,7 @@ public class HttpUtil {
 		RequestConfig requestConfig = builder.build();
 
 		HttpContext httpContext = new BasicHttpContext();
-		HttpGet getMethod = new HttpGet(uri);
+		HttpGet getMethod = new HttpGet(url);
 		getMethod.setConfig(requestConfig);
 		CloseableHttpResponse response = null;
 		try {
