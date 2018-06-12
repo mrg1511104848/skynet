@@ -21,7 +21,7 @@ public class AnalysisUtil {
 	}
 	public static List<String> getTermNameList(String sentence){
 		List<String> termNameList = new ArrayList<String>();
-		Result ansjResult = ToAnalysis.parse(sentence);
+		Result ansjResult = DicAnalysis.parse(sentence);
 		List<Term> terms = ansjResult.getTerms();
 		for (Term term : terms) {
 			termNameList.add(term.getName());

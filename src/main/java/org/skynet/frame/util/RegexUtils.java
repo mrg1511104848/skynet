@@ -193,6 +193,15 @@ public class RegexUtils {
     	List<String> list = getByGroup(regex, str, null);
         return list.size()>0?list.get(0):null;
     }
+    /**
+     * 提取数字
+     * @param ipAddress
+     * @return
+     */
+    public static List<String> getAllMatchByRegex(String regex , String str) {
+    	List<String> list = getByGroup(regex, str, null);
+        return list.size()>0?list:null;
+    }
     public static List<String> getByGroup(String regex , String str ,Integer idx) {
     	List<String> resultList = new ArrayList<String>();
         Matcher matcher = Pattern.compile(regex).matcher(str);
