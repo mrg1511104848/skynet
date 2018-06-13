@@ -277,8 +277,17 @@ public class RegexUtils {
 //    	
 //    	String s = RegexUtils.getByRegex("documentId:\\s*'(.+)'", "documentId:  '391125'");
 //    	System.out.println(s);
-    	String s = RegexUtils.getByRegex(dosageFilterRegex, "每次口服一至二片");
-    	System.out.println(s);
-    	System.out.println("一日 1～2 片".matches(".*mg.*|.*g.*|.*毫克.*|.*克.*|.*次.*|.*片.*[片|粒|颗|袋|mg|g|毫克|克]?"));
+//    	String s = RegexUtils.getByRegex(dosageFilterRegex, "每次口服一至二片");
+//    	System.out.println(s);
+//    	System.out.println("一日 1～2 片".matches(".*mg.*|.*g.*|.*毫克.*|.*克.*|.*次.*|.*片.*[片|粒|颗|袋|mg|g|毫克|克]?"));
+    	String tongYongName = "复方卡托不批";
+    	List<String> tongYongNameRegexList = RegexUtils.getByGroup("(左旋|小儿|复方|右旋|注射用){0,1}(.+?)(口服|片|分散片|混悬液|缓释胶囊|胶囊|缓释片|乳膏|凝胶|软胶囊|糖浆|搽剂|缓释混悬液|混悬液|颗粒|注射液|滴眼液|泡腾片|眼膏|肠溶片|栓){1,3}", tongYongName, 2);
+    	if(tongYongNameRegexList.size() == 0){
+    		tongYongNameRegexList = RegexUtils.getByGroup("(左旋|小儿|复方|右旋|注射用){0,1}(.+)", tongYongName, 2);
+    	}
+    	if(tongYongNameRegexList.size() > 0){
+    		tongYongName = tongYongNameRegexList.get(0);
+    	}
+    	System.out.println(tongYongName);
     }
 }
