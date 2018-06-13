@@ -51,7 +51,7 @@ public class TestSelenium {
 				"E://学习分享/新建文件夹/chromedriver.exe");
 		
 		int pageTotal = 11067;
-		int currPage = 3668;
+		int currPage = 11067;
 		
 		//取消 chrome正受到自动测试软件的控制的信息栏  
         ChromeOptions options = new ChromeOptions();  
@@ -62,7 +62,7 @@ public class TestSelenium {
 		do {
 			log.info("--start currPage ：" + currPage);
 			List<String> hrefList = new ArrayList<String>();
-			Document dbExistsPageDoc = MongoUtil.findOne("sfda_each_page_html", "href", currPage);
+			Document dbExistsPageDoc = MongoUtil.findOne("sfda_each_page_html_no_rep", "href", currPage);
 			if(dbExistsPageDoc!=null){
 				org.jsoup.nodes.Document doc = Jsoup.parse(dbExistsPageDoc.getString("html"));
 				Elements elements = doc.select("table:eq(1) tr a");
@@ -78,7 +78,7 @@ public class TestSelenium {
 				map.put("href", currPage);
 				map.put("currPage", currPage);
 				map.put("html", driver.getPageSource());
-				MongoUtil.saveDoc("sfda_each_page_html", map);
+				MongoUtil.saveDoc("sfda_each_page_html_no_rep", map);
 				List<WebElement> listElements = driver.findElements(By.xpath("/html/body/table[2]/tbody/tr//a"));
 				for (WebElement listEle : listElements) {
 					String h = listEle.getAttribute("href");
