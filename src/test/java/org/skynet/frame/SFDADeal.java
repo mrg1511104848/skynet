@@ -3,25 +3,30 @@ package org.skynet.frame;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.bson.Document;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.skynet.frame.util.mongo.MongoUtil;
 
 import com.mongodb.client.MongoCursor;
 
 public class SFDADeal {
+	private static Logger log = Logger.getLogger(SFDADeal.class);
 	public static void main(String[] args) {
+		dealStep2();
+	}
+	private static void dealStep1(){
 		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep");
 		List<String> hrefList = new ArrayList<String>();
 		/*int idx = 1;
@@ -62,6 +67,57 @@ public class SFDADeal {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
+	private static void dealStep2(){
+		System.setProperty("webdriver.chrome.driver",
+				"E://学习分享/新建文件夹/chromedriver.exe");
+		
+		
+		//取消 chrome正受到自动测试软件的控制的信息栏  
+        ChromeOptions options = new ChromeOptions();  
+        options.addArguments("disable-infobars"); 
+        
+		WebDriver driver = new ChromeDriver(options);
+		
+		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep");
+		while (cursor.hasNext()) {
+			Document doc  = cursor.next();
+			String html = doc.getString("html");
+			Elements elements = Jsoup.parse(html).select("a:contains(国药)");
+			for (Element element : elements) {
+//				nums.add(Integer.parseInt(StringUtils.substringBefore(element.text(),".")));
+				String href = StringUtils.substringBetween(element.attr("href"), "javascript:commitForECMA(callbackC,'","',null)");
+				if(StringUtils.isBlank(href)){
+					log.error(element.text());
+					continue;
+				}
+				href = "http://app1.sfda.gov.cn/datasearch/face3/"+href;
+				driver.get(href);
+				
+				
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("href", href);
+				map.put("html", driver.getPageSource());
+				MongoUtil.saveDoc("sfda_each_page_html_no_rep_detail", map);
+				
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
