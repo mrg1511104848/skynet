@@ -24,7 +24,8 @@ import com.mongodb.client.MongoCursor;
 public class SFDADeal {
 	private static Logger log = Logger.getLogger(SFDADeal.class);
 	public static void main(String[] args) {
-		dealStep2();
+//		dealStep2();
+		System.out.println(StringUtils.isBlank(Jsoup.parse("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head></head><body></body></html>").select("body").text()));
 	}
 	private static void dealStep1(){
 		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep");
@@ -78,13 +79,14 @@ public class SFDADeal {
         options.addArguments("disable-infobars"); 
         
 		WebDriver driver = new ChromeDriver(options);
-		
-		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep");
+		int currRun = 0;
+		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep",true);
 		while (cursor.hasNext()) {
 			Document doc  = cursor.next();
 			String html = doc.getString("html");
 			Elements elements = Jsoup.parse(html).select("a:contains(国药)");
 			for (Element element : elements) {
+				log.info("当前："+currRun++);
 //				nums.add(Integer.parseInt(StringUtils.substringBefore(element.text(),".")));
 				String href = StringUtils.substringBetween(element.attr("href"), "javascript:commitForECMA(callbackC,'","',null)");
 				if(StringUtils.isBlank(href)){
@@ -92,16 +94,30 @@ public class SFDADeal {
 					continue;
 				}
 				href = "http://app1.sfda.gov.cn/datasearch/face3/"+href;
+				if(MongoUtil.has("sfda_each_page_html_no_rep_detail", "href", href)) continue;
+				
 				driver.get(href);
 				
-				
+				if(driver.getPageSource()!=null){
+					org.jsoup.nodes.Document pageSourceDoc = Jsoup.parse(driver.getPageSource());
+					String bodyText = pageSourceDoc.select("body").text();
+					if(StringUtils.isBlank(bodyText)){
+						log.error(String.format("The html of href “%s” is blank ", href));
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
+				}
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("href", href);
 				map.put("html", driver.getPageSource());
 				MongoUtil.saveDoc("sfda_each_page_html_no_rep_detail", map);
 				
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -110,7 +126,9 @@ public class SFDADeal {
 	}
 	
 	
-	
+	private static void dealStep3(){
+		
+	}
 	
 	
 	
