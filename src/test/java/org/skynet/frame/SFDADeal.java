@@ -24,8 +24,8 @@ import com.mongodb.client.MongoCursor;
 public class SFDADeal {
 	private static Logger log = Logger.getLogger(SFDADeal.class);
 	public static void main(String[] args) {
-//		dealStep2();
-		System.out.println(StringUtils.isBlank(Jsoup.parse("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head></head><body></body></html>").select("body").text()));
+		dealStep2();
+//		System.out.println(StringUtils.isBlank(Jsoup.parse("<html xmlns=\"http://www.w3.org/1999/xhtml\"><head></head><body></body></html>").select("body").text()));
 	}
 	private static void dealStep1(){
 		MongoCursor<Document> cursor = MongoUtil.iterator("sfda_each_page_html_no_rep");
@@ -71,7 +71,7 @@ public class SFDADeal {
 	}
 	private static void dealStep2(){
 		System.setProperty("webdriver.chrome.driver",
-				"E://学习分享/新建文件夹/chromedriver.exe");
+				"C://chromedriver.exe");
 		
 		
 		//取消 chrome正受到自动测试软件的控制的信息栏  
@@ -101,7 +101,7 @@ public class SFDADeal {
 				if(driver.getPageSource()!=null){
 					org.jsoup.nodes.Document pageSourceDoc = Jsoup.parse(driver.getPageSource());
 					String bodyText = pageSourceDoc.select("body").text();
-					if(StringUtils.isBlank(bodyText)){
+					if(StringUtils.isBlank(bodyText) || !driver.getPageSource().contains("批准文号")){
 						log.error(String.format("The html of href “%s” is blank ", href));
 						try {
 							Thread.sleep(5000);
@@ -117,7 +117,7 @@ public class SFDADeal {
 				MongoUtil.saveDoc("sfda_each_page_html_no_rep_detail", map);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
