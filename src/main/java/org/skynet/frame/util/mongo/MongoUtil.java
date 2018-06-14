@@ -913,6 +913,26 @@ public class MongoUtil {
 		return iterator(collectionName, null,null, false);
 	}
 	/**
+	 * 
+	 * @param collectionName
+	 * @return
+	 */
+	public static List<Document> findDocList(String collectionName) {
+		MongoCursor<Document> cursor = MongoUtil.iterator(collectionName);
+		List<Document> docs = new ArrayList<Document>();
+		int currCursor = 0;
+		int totalCount = MongoUtil.getCount(collectionName);
+		while (cursor.hasNext()) {
+			currCursor++;
+			if(currCursor%100==0||currCursor == totalCount){
+				log.info(String.format("[collectionName] %s progress : %s", collectionName,currCursor+"/"+totalCount));
+			}
+			Document doc = cursor.next();
+			docs.add(doc);
+		}
+		return docs;
+	}
+	/**
 	 * 获取集合的cursor
 	 * @param collectionName 集合名称
 	 * @param limit 限制返回的数量
@@ -971,5 +991,11 @@ public class MongoUtil {
 		}
 		BasicDBObject find = new BasicDBObject(filter);
 		getCollection(collectionName).deleteMany(find);
+	}
+
+	public static void delete(String collectionName, String fieldName, String fieldValue) {
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put(fieldName, fieldValue);
+		delete(collectionName, filter);
 	}
 }
