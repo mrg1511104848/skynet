@@ -506,6 +506,7 @@ public class HttpUtil {
 			Path pathInfo = field.getAnnotation(Path.class);
 			String fieldAttr = pathInfo.attr();
 			String fieldPath = pathInfo.value();
+			fieldPath = fieldPath.trim();
 			boolean useText = pathInfo.useText();
 			boolean useOwnText = pathInfo.useOwnText();
 			boolean needAbsolutePath = pathInfo.needAbsolutePath();

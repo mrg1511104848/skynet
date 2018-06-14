@@ -918,7 +918,15 @@ public class MongoUtil {
 	 * @return
 	 */
 	public static List<Document> findDocList(String collectionName) {
-		MongoCursor<Document> cursor = MongoUtil.iterator(collectionName);
+		return findDocList(collectionName,null);
+	}
+	/**
+	 * 
+	 * @param collectionName
+	 * @return
+	 */
+	public static List<Document> findDocList(String collectionName,Integer limit) {
+		MongoCursor<Document> cursor = MongoUtil.iterator(collectionName,limit);
 		List<Document> docs = new ArrayList<Document>();
 		int currCursor = 0;
 		int totalCount = MongoUtil.getCount(collectionName);
