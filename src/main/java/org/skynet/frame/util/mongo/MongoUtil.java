@@ -790,13 +790,14 @@ public class MongoUtil {
 					.getCollection(srcCollectionName);
 			MongoCollection<Document> tarCollection = tarDatabase
 					.getCollection(tarCollectionName);
+			long srcCollectionCount = MongoUtil.getCount(srcCollection, null);
 			int currCp = 0;
 			FindIterable<Document> srcItr = srcCollection.find();
 			MongoCursor<Document> srcCursor = srcItr.iterator();
 			while (srcCursor.hasNext()) {
 				Document doc = srcCursor.next();
 				MongoUtil.saveDoc(tarCollection, doc);
-				System.out.println(currCp++);
+				System.out.println(currCp+++"/"+srcCollectionCount);
 			}
 
 		} catch (Exception e) {

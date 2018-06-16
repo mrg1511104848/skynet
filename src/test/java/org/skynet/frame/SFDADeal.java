@@ -71,7 +71,7 @@ public class SFDADeal {
 	}
 	private static void dealStep2(){
 		System.setProperty("webdriver.chrome.driver",
-				"C://chromedriver.exe");
+				"E:/学习分享/新建文件夹/chromedriver.exe");
 		
 		
 		//取消 chrome正受到自动测试软件的控制的信息栏  

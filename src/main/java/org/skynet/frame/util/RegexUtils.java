@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class RegexUtils {
 	/**
      * 验证Email
@@ -202,7 +204,11 @@ public class RegexUtils {
     	List<String> list = getByGroup(regex, str, null);
         return list.size()>0?list:null;
     }
+    
     public static List<String> getByGroup(String regex , String str ,Integer idx) {
+    	if(StringUtils.isBlank(str)){
+    		throw new RuntimeException("The str to match can't be blank  !");
+    	}
     	List<String> resultList = new ArrayList<String>();
         Matcher matcher = Pattern.compile(regex).matcher(str);
         int groupCount = matcher.groupCount();
@@ -220,6 +226,19 @@ public class RegexUtils {
         	}
         }
         return resultList;
+    }
+    /**
+     * 调用 RegexUtils.getByGroup(regex, str ,1) 返回结果
+     * @param regex
+     * @param str
+     * @return
+     */
+    public static String getByGroupSimple(String regex , String str) {
+    	List<String> results = RegexUtils.getByGroup(regex, str ,1);
+		if(results!=null && results.size()>0){
+			return results.get(0);
+		}
+		return null;
     }
     public static List<String> getByGroup(String regex , String str) {
     	List<String> resultList = new ArrayList<String>();
