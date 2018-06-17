@@ -919,15 +919,24 @@ public class MongoUtil {
 	 * @return
 	 */
 	public static List<Document> findDocList(String collectionName) {
-		return findDocList(collectionName,null);
+		return findDocList(collectionName,null,null,false);
 	}
 	/**
 	 * 
 	 * @param collectionName
 	 * @return
 	 */
-	public static List<Document> findDocList(String collectionName,Integer limit) {
-		MongoCursor<Document> cursor = MongoUtil.iterator(collectionName,limit);
+	public static List<Document> findDocList(String collectionName,Map<String, Object> filter) {
+		return findDocList(collectionName,filter,null,false);
+	}
+	/**
+	 * 
+	 * @param collectionName
+	 * @return
+	 */
+	public static List<Document> findDocList(String collectionName,
+			Map<String, Object> filter,Integer limit, boolean noCursorTimeout) {
+		MongoCursor<Document> cursor = MongoUtil.iterator(collectionName,filter,limit,noCursorTimeout);
 		List<Document> docs = new ArrayList<Document>();
 		int currCursor = 0;
 		int totalCount = MongoUtil.getCount(collectionName);
