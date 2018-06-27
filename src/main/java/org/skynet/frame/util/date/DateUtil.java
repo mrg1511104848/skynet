@@ -40,6 +40,11 @@ public class DateUtil {
 	 * yyyy-MM-dd HH:mm:ss
 	 */
 	public static final String DATE_FORMAT_06 = "yyyy-MM-dd HH:mm:ss";
+	
+	/**
+	 * yyyyMMddHHmmssSSS
+	 */
+	public static final String DATE_FORMAT_07 = "yyyyMMddHHmmssSSS";
 
 	public static Date addDay(int num) {
 		return DateUtils.addDays(new Date(), num);
