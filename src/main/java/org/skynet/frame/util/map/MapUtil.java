@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import net.sf.json.JSONNull;
 
@@ -48,6 +49,23 @@ public class MapUtil {
 			}
 		}
 	}
+
+	 /**
+     * 使用 Map按key进行排序
+     * @param map
+     * @return
+     */
+    public static Map<String, String> sortMapByKey(Map<String, String> map) {
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
+
+        Map<String, String> sortMap = new TreeMap<String, String>(new MapKeyComparator());
+
+        sortMap.putAll(map);
+
+        return sortMap;
+    }
 
 	public static Map<String, Integer> sortMapByValue(
 			Map<String, Integer> oriMap) {
@@ -98,7 +116,14 @@ public class MapUtil {
 			}
 		}
 	}
+	static class MapKeyComparator implements Comparator<String>{
 
+	    @Override
+	    public int compare(String str1, String str2) {
+	        
+	        return str1.compareTo(str2);
+	    }
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void main(String[] args) throws Exception {
 		Collection<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
