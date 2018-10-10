@@ -875,9 +875,12 @@ public class MongoUtil {
 			Integer limit) {
 		return find(collectionName, null, limit, false,null);
 	}
-
 	public static FindIterable<Document> find(String collectionName,
 			Map<String, Object> filter, Integer limit, boolean noCursorTimeout,Map<String, Object> projection) {
+		return find(collectionName, filter, limit, null , noCursorTimeout, projection);
+	}
+	public static FindIterable<Document> find(String collectionName,
+			Map<String, Object> filter, Integer limit,Integer skip, boolean noCursorTimeout,Map<String, Object> projection) {
 		BasicDBObject find = null;
 		BasicDBObject projectionBson = null;
 		if (filter != null) {
@@ -897,6 +900,12 @@ public class MongoUtil {
 				throw new RuntimeException("Find limit must > 0");
 			}
 			findIterable = findIterable.limit(limit);
+		}
+		if (skip != null) {
+			if (skip <= 0) {
+				throw new RuntimeException("Find skip must > 0");
+			}
+			findIterable = findIterable.skip(skip);
 		}
 		return findIterable.noCursorTimeout(noCursorTimeout);
 	}
